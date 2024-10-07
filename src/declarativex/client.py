@@ -50,4 +50,14 @@ class BaseClient:
         self.proxies = proxies or self.proxies
 
 
-__all__ = ["BaseClient"]
+class ClientFactory:
+    @staticmethod
+    def create_sync_client(client_class: Type[BaseClient], *args, **kwargs) -> BaseClient:
+        return client_class(*args, **kwargs)
+
+    @staticmethod
+    def create_async_client(client_class: Type[BaseClient], *args, **kwargs) -> BaseClient:
+        return client_class(*args, **kwargs)
+
+
+__all__ = ["BaseClient", "ClientFactory"]

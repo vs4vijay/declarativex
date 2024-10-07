@@ -9,7 +9,7 @@ import pytest
 from httpx import Response, Proxy, URL
 from pytest_mock import MockerFixture
 
-from declarativex import http, BaseClient
+from declarativex import http, BaseClient, ClientFactory
 from declarativex.dependencies import Files
 from declarativex.exceptions import (
     DependencyValidationError,
@@ -356,3 +356,16 @@ def test_files_field(mocker: MockerFixture):
         in send_mock.send.call_args_list[0].args[0].headers["content-type"]
     )
     assert file_content in send_mock.send.call_args_list[0].args[0].read()
+
+
+def test_client_factory_sync_client_creation():
+    class TestClient(BaseClient):
+        base_url = "https://example.com"
+
+        @http("GET", "/test")
+        def get_test(self):
+            return {"message": "success"}
+
+    client = ClientFactory.create_sync_client(TestClient)
+    response = client.get_test()
+    assert response == {"message": "success"}

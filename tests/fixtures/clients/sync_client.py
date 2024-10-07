@@ -13,6 +13,7 @@ from declarativex import (
     Query,
     Header,
     http,
+    ClientFactory,
 )
 from tests.fixtures.schemas import dataclass, pydantic
 
@@ -110,8 +111,8 @@ for schema in [dataclass, pydantic, None]:
             ...
 
     if schema == dataclass:
-        sync_dataclass_client = SyncClientPydantic()
+        sync_dataclass_client = ClientFactory.create_sync_client(SyncClientPydantic)
     elif schema == pydantic:
-        sync_pydantic_client = SyncClientPydantic()
+        sync_pydantic_client = ClientFactory.create_sync_client(SyncClientPydantic)
     elif schema is None:
-        sync_dictionary_client = SyncClientPydantic()
+        sync_dictionary_client = ClientFactory.create_sync_client(SyncClientPydantic)

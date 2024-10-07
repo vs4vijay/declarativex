@@ -13,6 +13,7 @@ from declarativex import (
     Query,
     Header,
     http,
+    ClientFactory,
 )
 from tests.fixtures.schemas import dataclass, pydantic
 
@@ -37,7 +38,7 @@ for schema in [dataclass, pydantic, None]:
     )
     RegisterResponseSchema = schema.RegisterResponse if schema else dict
 
-    class AsyncClientPydantic(BaseClient):
+    class ClientPydantic(BaseClient):
         base_url = "https://reqres.in/"
 
         @http("GET", "api/users/{user_id}")
@@ -112,8 +113,8 @@ for schema in [dataclass, pydantic, None]:
             ...
 
     if schema == dataclass:
-        async_dataclass_client = AsyncClientPydantic()
+        async_dataclass_client = ClientFactory.create_async_client(ClientPydantic)
     elif schema == pydantic:
-        async_pydantic_client = AsyncClientPydantic()
+        async_pydantic_client = ClientFactory.create_async_client(ClientPydantic)
     elif schema is None:
-        async_dictionary_client = AsyncClientPydantic()
+        async_dictionary_client = ClientFactory.create_async_client(ClientPydantic)
