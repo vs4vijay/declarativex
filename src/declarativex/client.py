@@ -17,6 +17,7 @@ class BaseClient:
         middlewares: List of middlewares for the client.
         error_mappings: Mapping of status codes to exceptions.
         proxies: Proxy configuration for the client.
+        client: Pre-configured httpx client.
     """
 
     base_url: str = ""
@@ -26,6 +27,7 @@ class BaseClient:
     middlewares: Sequence[Middleware] = []
     error_mappings: Dict[int, Type] = {}
     proxies: ProxiesType = None
+    client: Optional[httpx.Client] = None
 
     def __init__(
         self,
@@ -36,6 +38,7 @@ class BaseClient:
         middlewares: Optional[Sequence[Middleware]] = None,
         error_mappings: Optional[Dict[int, Type]] = None,
         proxies: ProxiesType = None,
+        client: Optional[httpx.Client] = None,
     ) -> None:
         self.base_url = base_url or self.base_url
         if not self.base_url:
@@ -48,6 +51,7 @@ class BaseClient:
         self.middlewares = middlewares or self.middlewares
         self.error_mappings = error_mappings or self.error_mappings
         self.proxies = proxies or self.proxies
+        self.client = client or self.client
 
 
 __all__ = ["BaseClient"]

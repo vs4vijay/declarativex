@@ -209,11 +209,22 @@ class AsyncExecutor(Executor):
         return await client.send(request)
 
     async def _execute(self, request: RawRequest):
-        async with httpx.AsyncClient(
-            follow_redirects=True,
-            http2=bool(h2),
-            proxies=self.endpoint_configuration.client_configuration.proxies,
-        ) as client:
+        client = self.endpoint_configuration.client_configuration.client
+        if client is None:
+            async with httpx.AsyncClient(
+                follow_redirects=True,
+                http2=bool(h2),
+                proxies=self.endpoint_configuration.client_configuration.proxies,
+            ) as client:
+                httpx_request = request.to_httpx_request()
+                httpx_response = await self.wait_for(
+                    client=client, request=httpx_request
+                )
+                return self.parse_response(
+                    httpx_request=httpx_request,
+                    httpx_response=httpx_response,
+                )
+        else:
             httpx_request = request.to_httpx_request()
             httpx_response = await self.wait_for(
                 client=client, request=httpx_request
@@ -257,11 +268,22 @@ class SyncExecutor(Executor):
         return client.send(request)
 
     def _execute(self, request: RawRequest):
-        with httpx.Client(
-            follow_redirects=True,
-            http2=bool(h2),
-            proxies=self.endpoint_configuration.client_configuration.proxies,
-        ) as client:
+        client = self.endpoint_configuration.client_configuration.client
+        if client is None:
+            with httpx.Client(
+                follow_redirects=True,
+                http2=bool(h2),
+                proxies=self.endpoint_configuration.client_configuration.proxies,
+            ) as client:
+                httpx_request = request.to_httpx_request()
+                httpx_response = self.wait_for(
+                    client=client, request=httpx_request
+                )
+                return self.parse_response(
+                    httpx_request=httpx_request,
+                    httpx_response=httpx_response,
+                )
+        else:
             httpx_request = request.to_httpx_request()
             httpx_response = self.wait_for(
                 client=client, request=httpx_request

@@ -47,6 +47,7 @@ class http(_Declaration):
         middlewares: Optional[Sequence[Middleware]] = None,
         error_mappings: Optional[Dict[int, Type]] = None,
         proxies: ProxiesType = None,
+        client: Optional[httpx.Client] = None,
     ):
         self.client_configuration = ClientConfiguration.create(
             base_url=base_url,
@@ -56,6 +57,7 @@ class http(_Declaration):
             middlewares=middlewares,
             error_mappings=error_mappings,
             proxies=proxies,
+            client=client,
         )
 
         self.endpoint_configuration = EndpointConfiguration(
@@ -79,6 +81,7 @@ class gql(_Declaration):
         middlewares: Optional[Sequence[Middleware]] = None,
         error_mappings: Optional[Dict[int, Type]] = None,
         proxies: ProxiesType = None,
+        client: Optional[httpx.Client] = None,
     ):
         try:
             from graphql.parser import GraphQLParser  # type: ignore  # noqa: F401, E501
@@ -96,6 +99,7 @@ class gql(_Declaration):
             middlewares=middlewares,
             error_mappings=error_mappings,
             proxies=proxies,
+            client=client,
         )
 
         self.endpoint_configuration = EndpointConfiguration(

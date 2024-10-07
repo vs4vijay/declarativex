@@ -109,6 +109,15 @@ for schema in [dataclass, pydantic, None]:
         ) -> RegisterResponseSchema:
             ...
 
+        @http("GET", "api/users/{user_id}", client=httpx.Client())
+        def get_user_with_custom_client(
+            self,
+            user_id: Annotated[int, Path],
+            delay: int = 0,
+            timeout: Annotated[float, Timeout()] = 2.0,
+        ) -> UserResponseSchema:
+            ...
+
     if schema == dataclass:
         sync_dataclass_client = SyncClientPydantic()
     elif schema == pydantic:
